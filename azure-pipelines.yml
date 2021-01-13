@@ -11,21 +11,17 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- task: Bash@3
-  inputs:
-    targetType: 'inline'
-    script: 'sh "git checkout tags/7.1"'
-  displayName: 'Checkout'
 - task: Maven@3
   inputs:
     mavenPomFile: 'pom.xml'
-    mavenOptions: '-Xmx3072m'
+    publishJUnitResults: false
     javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.8'
-    jdkArchitectureOption: 'x64'
-    publishJUnitResults: true
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    goals: 'package'
+    jdkVersionOption: '1.11'
+    mavenVersionOption: 'Default'
+    mavenOptions: 'package -DskipTests'
+    mavenAuthenticateFeed: false
+    effectivePomSkip: false
+    sonarQubeRunAnalysis: false
   displayName: 'Build'
 
 - task: Veracode@3
