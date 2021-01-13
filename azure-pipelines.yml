@@ -18,7 +18,7 @@ steps:
     javaHomeOption: 'JDKVersion'
     jdkVersionOption: '1.11'
     mavenVersionOption: 'Default'
-    mavenOptions: 'package -DskipTests'
+    mavenOptions: '-DskipTests'
     mavenAuthenticateFeed: false
     effectivePomSkip: false
     sonarQubeRunAnalysis: false
