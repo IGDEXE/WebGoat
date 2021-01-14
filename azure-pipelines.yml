@@ -29,7 +29,7 @@ steps:
     ConnectionDetailsSelection: 'Credentials'
     apiId: '$(APIID)'
     apiKey: '$(APIKEY)'
-    veracodeAppProfile: 'AzDevOps.NodeGoat'
+    veracodeAppProfile: 'AzDevOps.WebGoat'
     version: '$(build.buildNumber)'
     filepath: '$(Build.ArtifactStagingDirectory)/*.jar'
     createSandBox: false
