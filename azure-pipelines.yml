@@ -31,7 +31,7 @@ steps:
     apiKey: '$(APIKEY)'
     veracodeAppProfile: 'AzDevOps.WebGoat'
     version: '$(build.buildNumber)'
-    filepath: '$(Build.ArtifactStagingDirectory)/*.jar'
+    filepath: '**/**.jar'
     createSandBox: false
     createProfile: true
     failTheBuildIfVeracodeScanDidNotInitiate: false
@@ -61,7 +61,7 @@ steps:
       veracodeID="$(APIID)"
       veracodeAPIkey="$(APIKEY)"
       appID="$(APPID)"
-      caminhoArquivo="$(Build.ArtifactStagingDirectory)/*.jar"
+      caminhoArquivo="**/**.jar"
       numeroVersao=$(date +%H%M%s%d%m%y)
       # Faz o download da ferramenta
       curl -L -o VeracodeJavaAPI.jar $urlDownloadAPI
