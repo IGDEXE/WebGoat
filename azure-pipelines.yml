@@ -33,6 +33,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
+      find -type f -name "*.war"
       cd $(build.artifactstagingdirectory)
       find -type f -name "*.jar"
 - task: Veracode@3
