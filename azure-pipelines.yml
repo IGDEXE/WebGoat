@@ -24,6 +24,10 @@ steps:
     sonarQubeRunAnalysis: false
   displayName: 'Build'
 
+- task: CopyFiles@2
+  inputs:
+    Contents: '**/**.jar'
+    TargetFolder: '$(build.artifactstagingdirectory)'
 - task: Veracode@3
   inputs:
     ConnectionDetailsSelection: 'Credentials'
@@ -31,7 +35,7 @@ steps:
     apiKey: '$(APIKEY)'
     veracodeAppProfile: 'AzDevOps.WebGoat'
     version: '$(build.buildNumber)'
-    filepath: '**/**.jar'
+    filepath: '$(build.artifactstagingdirectory)'
     createSandBox: false
     createProfile: true
     failTheBuildIfVeracodeScanDidNotInitiate: false
@@ -61,7 +65,7 @@ steps:
       veracodeID="$(APIID)"
       veracodeAPIkey="$(APIKEY)"
       appID="$(APPID)"
-      caminhoArquivo="**/**.jar"
+      caminhoArquivo="$(build.artifactstagingdirectory)"
       numeroVersao=$(date +%H%M%s%d%m%y)
       # Faz o download da ferramenta
       curl -L -o VeracodeJavaAPI.jar $urlDownloadAPI
@@ -77,7 +81,7 @@ steps:
       urlPipeScan="https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip"
       veracodeID="$(APIID)"
       veracodeAPIkey="$(APIKEY)"
-      caminhoArquivo="*.jar"
+      caminhoArquivo="$(build.artifactstagingdirectory)/*.jar"
       
       # Faz o download da ferramenta
       curl -o pipescan.zip $urlPipeScan
