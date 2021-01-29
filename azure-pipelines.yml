@@ -46,7 +46,7 @@ steps:
     filepath: '$(build.artifactstagingdirectory)'
     createSandBox: false
     createProfile: true
-    failTheBuildIfVeracodeScanDidNotInitiate: false
+    failTheBuildIfVeracodeScanDidNotInitiate: true
     scanStatusCheckInterval: '60'
     importResults: true
     failBuildOnPolicyFail: false
