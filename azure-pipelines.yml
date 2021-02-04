@@ -62,5 +62,5 @@ steps:
     importType: 'All Flaws'
     workItemType: 'Issue'
     area: 'M3Corp'
-    flawImportLimit: '1000'
+    flawImportLimit: '10000'
   displayName: 'Relatorio'
