@@ -10,6 +10,10 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
+variables:
+  veracodeAppProfile: PP_DEMO.$(Build.DefinitionName)
+  caminhoPacote: '$(build.artifactstagingdirectory)/JARs'
+
 steps:
 - task: Maven@3
   inputs:
@@ -27,40 +31,62 @@ steps:
 - task: CopyFiles@2
   inputs:
     Contents: '**/**.jar'
-    TargetFolder: '$(build.artifactstagingdirectory)'
+    TargetFolder: '$(caminhoPacote)'
 
 - task: Bash@3
   inputs:
     targetType: 'inline'
     script: |
       find -type f -name "*.war"
-      cd $(build.artifactstagingdirectory)
+      cd $(caminhoPacote)
       find -type f -name "*.jar"
+
+- script: |
+    curl -O -L https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip
+  displayName: 'Download Pipeline Scanner'
+- task: ExtractFiles@1
+  inputs:
+    archiveFilePatterns: 'pipeline-scan-LATEST.zip'
+    destinationFolder: '$(Build.ArtifactStagingDirectory)'
+    cleanDestinationFolder: false
+- script: |
+      java -jar $(Build.ArtifactStagingDirectory)/pipeline-scan.jar -vid $(APIID) -vkey $(APIKEY) --file '$(caminhoPacote)' --issue_details true 
+  displayName: 'Veracode PipelineScan'
+  continueOnError: true
+
+- task: CmdLine@2
+  inputs:
+    script: |
+      export SRCCLR_SCM_NAME=$(veracodeAppProfile)
+      curl -sSL https://download.sourceclear.com/ci.sh | bash -s – scan --update-advisor --allow-dirty
+  displayName: 'Veracode SCA'
+  continueOnError: true
+  
 - task: Veracode@3
   inputs:
     ConnectionDetailsSelection: 'Credentials'
     apiId: '$(APIID)'
     apiKey: '$(APIKEY)'
-    veracodeAppProfile: 'AzDevOps.WebGoat'
+    veracodeAppProfile: '$(veracodeAppProfile)'
     version: '$(build.buildNumber)'
-    filepath: '$(build.artifactstagingdirectory)'
+    filepath: '$(caminhoPacote)'
     createSandBox: false
     createProfile: true
-    failTheBuildIfVeracodeScanDidNotInitiate: true
+    failTheBuildIfVeracodeScanDidNotInitiate: false
     scanStatusCheckInterval: '60'
     importResults: true
     failBuildOnPolicyFail: false
-  displayName: 'SAST'
+  displayName: 'Veracode SAST'
 
 - task: Veracode Flaw Importer@3
   inputs:
     ConnectionDetailsSelection: 'Credentials'
     apiId: '$(APIID)'
     apiKey: '$(APIKEY)'
-    veracodeAppProfile: 'AzDevOps.WebGoat'
+    veracodeAppProfile: '$(veracodeAppProfile)'
     sandboxName: 
     importType: 'All Flaws'
     workItemType: 'Issue'
-    area: 'M3Corp'
-    flawImportLimit: '10000'
-  displayName: 'Relatorio'
+    area: '$(system.teamProject)'
+    flawImportLimit: '1000'
+  displayName: 'Veracode importando falhas'
