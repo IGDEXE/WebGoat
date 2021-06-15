@@ -50,7 +50,7 @@ steps:
     destinationFolder: '$(Build.ArtifactStagingDirectory)'
     cleanDestinationFolder: false
 - script: |
-      java -jar $(Build.ArtifactStagingDirectory)/pipeline-scan.jar -vid $(APIID) -vkey $(APIKEY) --file '$(caminhoPacote)' --issue_details true 
+      java -Dpipeline.debug=true -jar $(Build.ArtifactStagingDirectory)/pipeline-scan.jar -vid $(APIID) -vkey $(APIKEY) --file '$(caminhoPacote)' --issue_details true 
   displayName: 'Veracode PipelineScan'
   continueOnError: true
 
